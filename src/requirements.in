@@ -24,3 +24,4 @@ geocoder
 statsmodels
 lightgbm
 category_encoders
+hyperopt

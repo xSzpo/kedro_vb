@@ -22,3 +22,30 @@ master_table:
   type: pandas.ParquetDataSet
   filepath: data/03_primary/master_table.parquet
   layer: primary
+
+df_oot:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/df_oot.parquet
+  layer: primary
+
+df_train:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/df_train.parquet
+  layer: primary
+
+df_test:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/df_test.parquet
+  layer: primary
+
+df_valid:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/df_valid.parquet
+  layer: primary
+
+model_lgb_params:
+  type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
+  data_set:
+    type: json.JSONDataSet
+    filepath: data/06_models/model_lgb_params.json
+  layer: 06_models

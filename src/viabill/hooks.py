@@ -36,6 +36,7 @@ from kedro.versioning import Journal
 from kedro.pipeline import Pipeline
 
 from viabill.pipelines import data_processing as dp
+from viabill.pipelines import hp as hp
 
 
 class ProjectHooks:
@@ -46,10 +47,14 @@ class ProjectHooks:
             A mapping from a pipeline name to a ``Pipeline`` object.
         """
         data_processing_pipeline = dp.create_pipeline()
+        split = dp.create_splits()
+        hp_tune = hp.create_pipeline()
 
         return {
-            "__default__": data_processing_pipeline,
-            "dp": data_processing_pipeline
+            "__default__": data_processing_pipeline+split+hp_tune,
+            "dp": data_processing_pipeline,
+            "split": split,
+            "hp": hp_tune,
             }
 
     @hook_impl

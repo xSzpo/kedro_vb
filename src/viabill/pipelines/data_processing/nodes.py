@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 import re
 from unidecode import unidecode
@@ -170,3 +170,34 @@ def create_master_table(df_cust: pd.DataFrame,
     master_table = master_table.dropna(subset=['default'])
 
     return master_table
+
+
+def split_data(df: pd.DataFrame,
+               parameters: Dict) -> Tuple[pd.DataFrame, pd.DataFrame,
+                                          pd.DataFrame, pd.DataFrame]:
+    """Splits data into features and targets training, test, valid sets.
+    Args:
+        df: Data containing features and target.
+        df_aggr: Data containing edditional features, join on=['GC_addr_suburb','market','date_offer_w']
+        parameters: Parameters defined in parameters.yml.
+    Returns:
+        df_oot   - data set that will allow to check model perforance on the
+                   newest availile data (out of time),
+        df_train - data set for model trainig,
+        df_test  - data set for model performance assesing (out of sample),
+        df_valid - data set for hp tuning (out of sample),
+    """
+
+    df_oot = df.sort_values('customerID').iloc[-parameters['oot']:].sort_index()
+    df = df.sort_values('customerID').iloc[:-parameters['oot']]
+
+    size = df.shape[0]
+    train_size = int(size * parameters['train'])
+    test_size = int(size * parameters['test'])
+
+    df = df.sample(frac=1, random_state=1)
+    df_train = df.iloc[:train_size].sort_index()
+    df_test = df.iloc[train_size:(train_size+test_size)].sort_index()
+    df_valid = df.iloc[(train_size+test_size):].sort_index()
+
+    return df_oot, df_train, df_test, df_valid
