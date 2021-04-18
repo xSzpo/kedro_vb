@@ -28,8 +28,6 @@ def _process_customers(df_cust: pd.DataFrame, parameters: Dict):
 
 def _process_transactions(df_trans: pd.DataFrame, parameters: Dict):
 
-    number_of_aggregates = parameters["transactions_back"]
-
     # sample for debuging
     # df_trans = df_trans.sample(5000, random_state=1)
 
@@ -77,22 +75,26 @@ def _process_transactions(df_trans: pd.DataFrame, parameters: Dict):
     start_time = time.time()
 
     results = []
-    for i in range(1, number_of_aggregates+1):
+    for i in parameters["trans_back_aggreg_list"]:
 
-        log.info(f"starting aggregation loop #{i}")
-        if len(results) == 0:
-            results += [df_trans. set_index('rank').
-                        groupby('customerID')[['default_lag1', 'late_lag1',
-                                               'price_lag1']].
-                        rolling(i, min_periods=0).sum().reset_index()]
+        log.info(f"starting aggregation for #{i} transactions back")
+        if len(results) == 0 or len(parameters["trans_back_aggreg_list"]) <= 1:
+            results += [pd.concat([
+                df_trans.set_index('rank').groupby('customerID')[['default_lag1', 'late_lag1', 'price_lag1']].rolling(i, min_periods=1).sum().reset_index(),
+                df_trans.set_index('rank').groupby('customerID')[['default_lag1', 'late_lag1', 'price_lag1']].rolling(i, min_periods=1).mean().reset_index().iloc[:, 2:]
+                ], axis=1)]
+
             results[-1].columns = ['customerID', 'rank',
                                    f'default_lst_{str(i).zfill(2)}_sum',
                                    f'late_lst_{str(i).zfill(2)}_sum',
-                                   f'price_lst_{str(i).zfill(2)}_sum']
+                                   f'price_lst_{str(i).zfill(2)}_sum',
+                                   f'default_lst_{str(i).zfill(2)}_avg',
+                                   f'late_lst_{str(i).zfill(2)}_avg',
+                                   f'price_lst_{str(i).zfill(2)}_avg']
         else:
             results += [pd.concat([
-                df_trans.set_index('rank').groupby('customerID')[['default_lag1', 'late_lag1', 'price_lag1']].rolling(i, min_periods=0).sum().reset_index().iloc[:, 2:],
-                df_trans.set_index('rank').groupby('customerID')[['default_lag1', 'late_lag1', 'price_lag1']].rolling(i, min_periods=0).mean().reset_index().iloc[:, 2:]
+                df_trans.set_index('rank').groupby('customerID')[['default_lag1', 'late_lag1', 'price_lag1']].rolling(i, min_periods=1).sum().reset_index().iloc[:, 2:],
+                df_trans.set_index('rank').groupby('customerID')[['default_lag1', 'late_lag1', 'price_lag1']].rolling(i, min_periods=1).mean().reset_index().iloc[:, 2:]
                 ], axis=1)]
 
             results[-1].columns = [f'default_lst_{str(i).zfill(2)}_sum',
@@ -154,6 +156,15 @@ def create_master_table(df_cust: pd.DataFrame,
     # join data
     master_table = df_cust.merge(df_trans, on=['customerID'],
                                  how='left')
+
+    # create geo risk ranking
+    # temporary solution, if used in final solution, need to prepare in fit/transform maner
+    bins = [-np.inf, 0.049, 0.071, 0.088, 0.107, 0.137, np.inf]
+    geo_risk_rank = master_table.groupby('residentialAddress_clean')[['hist_default_sum', 'hist_trans_count']]. \
+        sum().reset_index(). \
+        assign(geo_risk_rank=lambda x: pd.cut(x['hist_default_sum']/x['hist_trans_count'], bins).cat.codes)
+
+    master_table = master_table.merge(geo_risk_rank[['residentialAddress_clean', 'geo_risk_rank']], on='residentialAddress_clean', how='left')
 
     # drop clients without transactions
     master_table = master_table.dropna(subset=['default'])

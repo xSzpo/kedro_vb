@@ -22,6 +22,8 @@ Declare any dependencies in `src/requirements.txt` for `pip` installation and `s
 To install them, run:
 
 ```
+conda env create --file src/environment.yml && \
+conda activate viabill && \
 kedro install
 ```
 
