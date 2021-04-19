@@ -37,6 +37,7 @@ from kedro.pipeline import Pipeline
 
 from viabill.pipelines import data_processing as dp
 from viabill.pipelines import hp as hp
+from viabill.pipelines import model as model
 
 
 class ProjectHooks:

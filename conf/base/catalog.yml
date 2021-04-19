@@ -43,6 +43,21 @@ df_valid:
   filepath: data/05_model_input/df_valid.parquet
   layer: primary
 
+df_train_new:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/df_train_new.parquet
+  layer: primary
+
+df_test_new:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/df_test_new.parquet
+  layer: primary
+
+df_valid_new:
+  type: pandas.ParquetDataSet
+  filepath: data/05_model_input/df_valid_new.parquet
+  layer: primary
+
 model_lgb_params:
   type: kedro_mlflow.io.artifacts.MlflowArtifactDataSet
   data_set:

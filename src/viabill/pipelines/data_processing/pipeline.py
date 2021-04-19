@@ -23,7 +23,7 @@ def create_splits(**kwargs):
             node(
                 func=split_data,
                 inputs=["master_table", "params:data_set"],
-                outputs=["df_oot", "df_train", "df_test", "df_valid"],
+                outputs=["df_oot", "df_train", "df_test", "df_valid", "df_train_new", "df_test_new", "df_valid_new",],
                 name="split_data",
             )
         ]

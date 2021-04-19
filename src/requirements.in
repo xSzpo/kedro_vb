@@ -25,3 +25,4 @@ statsmodels
 lightgbm
 category_encoders
 hyperopt
+jupyter_contrib_nbextensions
