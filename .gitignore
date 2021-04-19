@@ -1,7 +1,7 @@
 ##########################
 # KEDRO PROJECT
 
-mlrun/**
+mlruns
 
 # ignore all local configuration
 conf/local/**
