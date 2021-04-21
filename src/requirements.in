@@ -28,3 +28,4 @@ hyperopt
 jupyter_contrib_nbextensions
 mlxtend
 statsmodels
+scikit-plot

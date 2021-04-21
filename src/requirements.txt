@@ -177,6 +177,7 @@ joblib==1.0.1
     # via
     #   mlxtend
     #   scikit-learn
+    #   scikit-plot
 jsonschema==3.2.0
     # via
     #   jupyterlab-launcher
@@ -243,6 +244,7 @@ matplotlib==3.4.1
     # via
     #   -r /Users/xszpo/GoogleDrive/01_Projects/202104_viabill/src/requirements.in
     #   mlxtend
+    #   scikit-plot
     #   seaborn
 mccabe==0.6.1
     # via flake8
@@ -463,6 +465,9 @@ scikit-learn==0.24.1
     #   eli5
     #   lightgbm
     #   mlxtend
+    #   scikit-plot
+scikit-plot==0.3.7
+    # via -r /Users/xszpo/GoogleDrive/01_Projects/202104_viabill/src/requirements.in
 scipy==1.6.2
     # via
     #   category-encoders
@@ -471,6 +476,7 @@ scipy==1.6.2
     #   lightgbm
     #   mlxtend
     #   scikit-learn
+    #   scikit-plot
     #   seaborn
     #   statsmodels
 seaborn==0.11.1

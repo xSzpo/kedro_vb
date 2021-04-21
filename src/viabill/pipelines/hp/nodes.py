@@ -58,9 +58,8 @@ def _objective(
         params: Dict,
         d_train: lgb.basic.Dataset,
         d_valid: lgb.basic.Dataset,
-        d_test: lgb.basic.Dataset,
-        tr_test: np.ndarray,
-        y_test: np.ndarray,
+        tr_valid: np.ndarray,
+        y_valid: np.ndarray,
         parameters) -> float:
 
     experiment_id = _get_experiment()
@@ -95,9 +94,9 @@ def _objective(
             **train_params,
         )
 
-        y_predict_test = model.predict(tr_test)
+        y_predict_valid = model.predict(tr_valid)
 
-        auc = roc_auc_score(y_test, y_predict_test)
+        auc = roc_auc_score(y_valid, y_predict_valid)
 
         return -1 * auc
 
@@ -151,22 +150,15 @@ def hp_tuning(
         feature_name=transformer.named_steps['columntransformer'].get_feature_names(),
         params={'verbose': -1})
 
-    tr_test = transformer.transform(df_test)
-    y_test = df_test[parameters["target"]]
-
-    d_test = lgb.Dataset(
-        transformer.transform(df_test),
-        label=y_test,
-        feature_name=transformer.named_steps['columntransformer'].get_feature_names(),
-        params={'verbose': -1})
+    tr_valid = transformer.transform(df_valid)
+    y_valid = df_valid[parameters["target"]]
 
     best = fmin(
         partial(_objective,
                 d_train=d_train,
                 d_valid=d_valid,
-                d_test=d_test,
-                tr_test=tr_test,
-                y_test=y_test,
+                tr_valid=tr_valid,
+                y_valid=y_valid,
                 parameters=parameters),
         space,
         algo=tpe.suggest,

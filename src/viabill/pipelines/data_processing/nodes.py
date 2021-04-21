@@ -44,7 +44,11 @@ def _process_transactions(df_trans: pd.DataFrame, parameters: Dict):
         'paymentStatus4': {1: 0, 2: 4},
     }).filter(regex='payment').replace({0: np.nan}).min(axis=1).fillna(0)
 
-    df_trans['money_lost'] = df_trans['defualted_payment']/4 * df_trans['price']
+    df_trans = df_trans.assign(
+        money_lost=lambda x: x.apply(
+            lambda y: y['price'] * (5-y['defualted_payment'])/4 if y['defualted_payment'] > 0 else 0, axis=1
+        )
+    )
 
     df_trans["late_payment_first"] = df_trans.replace({
         'paymentStatus1': {1: 1, 2: 0},
@@ -206,16 +210,14 @@ def create_master_table(df_cust: pd.DataFrame,
 def split_data(df: pd.DataFrame,
                parameters: Dict) -> Tuple[pd.DataFrame, pd.DataFrame,
                                           pd.DataFrame, pd.DataFrame,
-                                          pd.DataFrame, pd.DataFrame,
-                                          pd.DataFrame]:
+                                          pd.DataFrame, pd.DataFrame
+                                          ]:
     """Splits data into features and targets training, test, valid sets.
     Args:
         df: Data containing features and target.
         df_aggr: Data containing edditional features, join on=['GC_addr_suburb','market','date_offer_w']
         parameters: Parameters defined in parameters.yml.
     Returns:
-        df_oot   - data set that will allow to check model performance on the
-                   latest available data (out of time) (EXISTING CUSTOMER),
         df_train - dataset for model training (EXISTING CUSTOMER),
         df_test  - dataset for model performance assessing (out of sample) (EXISTING CUSTOMER),
         df_valid - dataset for hp tuning (out of sample) (EXISTING CUSTOMER),
@@ -228,9 +230,6 @@ def split_data(df: pd.DataFrame,
     df_existing_customer = df.loc[df['rank'] > 1].reset_index(drop=True)
 
     # EXISTING CUSTOMER
-    df_oot = df_existing_customer.sort_values('customerID').iloc[-parameters['oot']:].sort_index()
-    df = df_existing_customer.sort_values('customerID').iloc[:-parameters['oot']]
-
     size = df_existing_customer.shape[0]
     train_size = int(size * parameters['train'])
     test_size = int(size * parameters['test'])
@@ -249,4 +248,4 @@ def split_data(df: pd.DataFrame,
     df_train_new_customer = df_new_customer.iloc[:train_size].sort_index()
     df_test_new_customer = df_new_customer.iloc[train_size:(train_size+test_size)].sort_index()
     df_valid_new_customer = df_new_customer.iloc[(train_size+test_size):].sort_index()
-    return df_oot, df_train, df_test, df_valid, df_train_new_customer, df_test_new_customer, df_valid_new_customer
+    return df_train, df_test, df_valid, df_train_new_customer, df_test_new_customer, df_valid_new_customer
