@@ -13,7 +13,7 @@ And even more importantly, can you identify factors which may be used to predict
 This is Kedro project [Kedro documentation](https://kedro.readthedocs.io).
 It contains Exploratory Data Analysis and solution developed in jupyter notebooks (./notebooks) and deployed as a kedro data transformation pipelines (./src/viabill/pipeline).
 
-Pippen's schema can be seen by running `kedro viz`.
+Pipeline schema can be seen by running `kedro viz`.
 
 It also utilize MlFlow experiment tracking.
 
