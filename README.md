@@ -1,26 +1,25 @@
-# viabill
+## Objective
+
+To explore and discover any risk factors that might likely contribute to late payments or non-payments.
+
+## Scenario
+
+ViaBill allows customers to purchase an item, and pay for it in 4 equal installments over the next 4 weeks. Most customers will pay these required installments on time. However, some customers will pay them late and some customers will unfortunately dishonor their agreement (default) and not pay all the installments.
+By exploring the synthetic data, can you find identify factors which may be used to predict which customers will pay late?
+And even more importantly, can you identify factors which may be used to predict which customers will not pay an installment at all?
 
 ## Overview
 
-This is your new Kedro project, which was generated using `Kedro 0.17.2`.
+This is Kedro project [Kedro documentation](https://kedro.readthedocs.io).
+It contains Exploratory Data Analysis and solution developed in jupyter notebooks (./notebooks) and deployed as a kedro data transformation pipelines (./src/viabill/pipeline).
 
-Take a look at the [Kedro documentation](https://kedro.readthedocs.io) to get started.
+Pippen's schema can be seen by running `kedro viz`.
 
-## Rules and guidelines
-
-In order to get the best out of the template:
-
-* Don't remove any lines from the `.gitignore` file we provide
-* Make sure your results can be reproduced by following a [data engineering convention](https://kedro.readthedocs.io/en/stable/12_faq/01_faq.html#what-is-data-engineering-convention)
-* Don't commit data to your repository
-* Don't commit any credentials or your local configuration to your repository. Keep all your credentials and local configuration in `conf/local/`
+It also utilize MlFlow experiment tracking.
 
 ## How to install dependencies
 
-
-Declare any dependencies in `src/requirements.txt` for `pip` installation and `src/environment.yml` for `conda` installation.
-
-To install them, run:
+To install dependencies, run:
 
 ```
 conda env create --file src/environment.yml && \
@@ -33,23 +32,13 @@ run mlflow init to setup mlflow
 kedro mlflow init
 ```
 
-## How to run your Kedro pipeline
+## How to run Kedro pipeline
 
-You can run your Kedro project with:
+You can run Kedro project with:
 
 ```
 kedro run
 ```
-
-## How to test your Kedro project
-
-Have a look at the file `src/tests/test_run.py` for instructions on how to write your tests. You can run your tests as follows:
-
-```
-kedro test
-```
-
-To configure the coverage threshold, go to the `.coveragerc` file.
 
 ## Project dependencies
 
@@ -96,35 +85,3 @@ You can also start JupyterLab:
 ```
 kedro jupyter lab
 ```
-
-### IPython
-And if you want to run an IPython session:
-
-```
-kedro ipython
-```
-
-### How to convert notebook cells to nodes in a Kedro project
-You can move notebook code over into a Kedro project structure using a mixture of [cell tagging](https://jupyter-notebook.readthedocs.io/en/stable/changelog.html#release-5-0-0) and Kedro CLI commands.
-
-By adding the `node` tag to a cell and running the command below, the cell's source code will be copied over to a Python file within `src/<package_name>/nodes/`:
-
-```
-kedro jupyter convert <filepath_to_my_notebook>
-```
-> *Note:* The name of the Python file matches the name of the original notebook.
-
-Alternatively, you may want to transform all your notebooks in one go. Run the following command to convert all notebook files found in the project root directory and under any of its sub-folders:
-
-```
-kedro jupyter convert --all
-```
-
-### How to ignore notebook output cells in `git`
-To automatically strip out all output cell contents before committing to `git`, you can run `kedro activate-nbstripout`. This will add a hook in `.git/config` which will run `nbstripout` before anything is committed to `git`.
-
-> *Note:* Your output cells will be retained locally.
-
-## Package your Kedro project
-
-[Further information about building project documentation and packaging your project](https://kedro.readthedocs.io/en/stable/03_tutorial/05_package_a_project.html)
