@@ -8,6 +8,12 @@ ViaBill allows customers to purchase an item, and pay for it in 4 equal installm
 By exploring the synthetic data, can you find identify factors which may be used to predict which customers will pay late?
 And even more importantly, can you identify factors which may be used to predict which customers will not pay an installment at all?
 
+
+## GIT
+
+https://github.com/xszpoassignments/vb
+
+
 ## Overview
 
 This is Kedro project [Kedro documentation](https://kedro.readthedocs.io).
